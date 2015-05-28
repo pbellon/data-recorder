@@ -1,0 +1,52 @@
+<div class="container">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <ul class="actions-list list-inline pull-right">
+          <li class="actions-list__elem">
+            <a class="btn btn-primary" ng-click="listCtrl.export()">
+              <span class="glyphicon glyphicon-file"></span>
+              <span class="hidden-sm hidden-lg hidden-md">Export</span>
+            </a>
+          </li>
+          <li class="actions-list__elem">
+            <a class="btn btn-primary" ui-sref="datatype.new()">
+              <span class="glyphicon glyphicon-plus"></span>
+              <span class="hidden-sm hidden-lg hidden-md">New Record Type</span>
+            </a>
+          </li>
+      </ul>
+      <div class="clearfix"></div>
+    </div>
+    <div class="panel-body">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Data Type</th>
+            <th>Count</th>
+            <th class="text-center">Add Record</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="type in listCtrl.allTypes() | orderBy:'count'">
+            <td><a ui-sref="datatype.single.records({type_id: type.id})">{{type.title}}</a></td>
+            <td>{{type.count}}</td>
+            <td class="text-center">
+              <a ng-click="listCtrl.addRecord({type: type.id})"><span class="glyphicon glyphicon-plus"></span></a>
+            </td>
+          </tr>
+
+          <tr ng-if="listCtrl.allTypes().length === 0">
+            <td colspan="3"><b>You don't have any type yet <a ui-sref="datatype.new()">create one</a>
+            </b></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="footer">
+    <p>With ♥ from <a href="https://twitter.com/Swiip">@Swiip</a></p>
+  </div>
+
+</div>

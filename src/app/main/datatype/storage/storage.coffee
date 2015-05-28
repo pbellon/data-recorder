@@ -1,0 +1,151 @@
+angular.module 'dataRecorder'
+  .service 'DatatypeStorage', [ 'STORAGE_KEYS', 'FIELD_TYPES', class DatatypeStorage
+        constructor: (@KEYS, @FIELD_TYPES)->
+          @local = window.localStorage
+          @_initStorage()
+          @datatypes = [
+            {
+              title: 'Cigarettes',
+              id: 1,
+              attrs: {
+                id: {
+                  order: 0
+                  id: 1
+                  name: 'ID'
+                  type: 'int'
+                  editable: false
+                }
+                date: {
+                  order: 1
+                  id: 2
+                  name: 'Date'
+                  type: 'date'
+                  editable: false
+
+                }
+              }
+              records: [
+                {id: 1, date: new Date()}
+                {id: 2, date: new Date()}
+                {id: 3, date: new Date()}
+                {id: 4, date: new Date()}
+                {id: 5, date: new Date()}
+                {id: 6, date: new Date()}
+                {id: 7, date: new Date()}
+                {id: 8, date: new Date()}
+                {id: 9, date: new Date()}
+                {id: 10, date: new Date()}
+                {id: 11, date: new Date()}
+                {id: 12, date: new Date()}
+                {id: 13, date: new Date()}
+              ]
+            },
+            {
+              title: 'Drinks'
+              id: 2
+              attrs: {
+                id: {
+                  id: 1
+                  order: 0,
+                  name: 'ID'
+                  type: 'int'
+                  editable: false
+                }
+                date: {
+                  id: 2
+                  order: 1,
+                  name: 'Date'
+                  type: 'date'
+                  editable: false
+                }
+                degree: {
+                  id: 3,
+                  order: 2,
+                  type: 'int'
+                  name: 'Degree'
+                  editable: true
+                },
+                name: {
+                  id: 4,
+                  order: 3,
+                  type: 'string',
+                  name: 'Name'
+                  editable: true
+                }
+              }
+              records: [
+                {id: 1, date: new Date(), degree: 12, name: 'Wine'}
+                {id: 2, date: new Date(), degree: 13, name: 'Wine'}
+                {id: 3, date: new Date(), degree: 7 , name: 'Beer'}
+                {id: 4, date: new Date(), degree: 8 , name: 'Beer'}
+                {id: 5, date: new Date(), degree: 8 , name: 'Beer'}
+                {id: 6, date: new Date(), degree: 9 , name: 'Beer'}
+                {id: 7, date: new Date(), degree: 7 , name: 'Beer'}
+                {id: 8, date: new Date(), degree: 7 , name: 'Beer'}
+                {id: 9, date: new Date(), degree: 7 , name: 'Beer'}
+              ]
+            }
+          ]
+
+        all: =>
+          _.map @_listIds(), (id)-> @_get(id)
+
+        allAggregated: =>
+          _.map @all(), (el)->
+            el.count = el.records.length
+            delete el['records']
+            el
+
+        get: (id)=>
+          @_get(id)
+
+        updateRecord: (type_id, record_id, record)=>
+          type = _.findWhere @datatypes, id: type_id
+          # remove old record version
+          records = _.filter type.records, (r)-> r.id == record_id
+          records.push(record)
+          type.records = records
+          @save(type.id, type)
+
+        delete: (id)=>
+          @datatypes = _.filter @datatypes, (el)-> el.id != id
+
+        deleteRecord: (id, recordId)=>
+          record = @get(id)
+          record.records = _.filter record.records, (el)-> el.id !=recordId
+
+
+        newTypeId: =>
+          @_newId(@_listIds())
+
+        newFieldId: (type) =>
+          @_newId _.pluck(type.fields, 'id')
+
+        _newId: (prev_ids)=>
+          max = -1
+          _.each prev_ids, (id)->
+            max = if max < id then id else max
+          max = 0 if max < 0
+          max + 1
+
+        # Intern methods
+        _listIds: =>
+          @_get(@KEYS.ID_LIST)
+
+        _initStorage: =>
+          if !@_get(@KEYS.ID_LIST)?
+            @_set(@KEYS.ID_LIST, [])
+
+        _save: (type)=>
+          key = @_getStorageKey(type.id)
+          @_set(key, type)
+
+        _get: (key)=>
+          @local.getItem("dataRecorder.#{key}")
+
+        _set: (key, val)=>
+          @local.setItem("dataRecorder.#{key}",val)
+
+        _removeAllData: =>
+          @local.clear()
+  ]

@@ -1,0 +1,85 @@
+<div class="container">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      {{ details.type.title }}
+      <ul class="actions-list list-inline pull-right">
+          <li class="actions-list__elem">
+            <a class="btn btn-primary" ng-click="list.export()">
+              <span class="glyphicon glyphicon-file"></span>
+              <span class="hidden-sm hidden-lg hidden-md">Export</span>
+            </a>
+          </li>
+          <li class="actions-list__elem">
+            <a class="btn btn-primary" ui-sref="datatype.details.records.new({type_id: details.type.id})">
+              <span class="glyphicon glyphicon-plus"></span>
+              <span class="hidden-sm hidden-lg hidden-md">New Record</span>
+            </a>
+          </li>
+      </ul>
+      <div class="clearfix"></div>
+    </div>
+    <div class="panel-body">
+      <table class="table">
+        <thead>
+          <tr>
+            <th ng-repeat="attr in recordsCtrl.attrs() | orderBy:'order'">{{attr.name}}</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="record in recordsCtrl.type.records | orderBy:'date'"  id="record_{{record.id}}">
+
+            <td ng-repeat="attr in recordsCtrl.attrs() | orderBy:'order'">
+
+              <span ng-switch="attr.type" ng-show="!(recordsCtrl.isEditing(record) && recordsCtrl.isEditable(attr.key))">
+                <span ng-switch-when="date">
+                  {{ record[attr.key] | date:'short' }}
+                </span>
+                <span ng-switch-default>
+                  {{ record[attr.key] }}
+                </span>
+              </span>
+              <input ng-if="recordsCtrl.isEditable(attr.key)"
+                     ng-show="recordsCtrl.isEditing(record)"
+                     ng-model="recordsCtrl.attrs_editions[record.id].current[attr.key]"
+                     data-recorder-dyn-input="{datatype: recordsCtrl.type, attr: attr.key}">
+            </td>
+            <td class="text-center record__actions">
+                <span ng-show="!recordsCtrl.isEditing(record)">
+                  <a ng-click="recordsCtrl.editRecord(record)"
+                     class="btn btn-default">
+                    <span class="text-primary glyphicon glyphicon-edit"></span>
+                  </a>
+
+                  <a ng-click="recordsCtrl.removeRecord(record.id)"
+                     class="btn btn-default">
+                    <span class="text-danger glyphicon glyphicon-trash"></span>
+                  </a>
+                </span>
+
+                <span ng-show="recordsCtrl.isEditing(record)">
+                  <a ng-click="recordsCtrl.saveEditions(record)"
+                     class="btn btn-default">
+                     <span class="text-primary glyphicon glyphicon-ok"></span>
+                   </a>
+
+                  <a ng-click="recordsCtrl.cancelEditions(record)"
+                     class="btn btn-default">
+                     <span class="text-danger glyphicon glyphicon-remove"></span>
+                  </a>
+                </span>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="footer">
+    <p>With ♥ from <a href="https://twitter.com/Swiip">@Swiip</a></p>
+  </div>
+
+</div>
