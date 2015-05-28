@@ -10,7 +10,7 @@ Data-recorder is focused on recording real things into data files, that's it.
 You won't be able to perform a query on your data inside data-recorder or
 add formulas (like SUM, COUNT etc.). 
 
-## So what it is exactly ? 
+## So what is it exactly ? 
 > Enter great explanation here
 
 ## Prerequisites
