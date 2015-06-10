@@ -1,0 +1,110 @@
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>
+                <span ng-if="formCtrl.newType">
+                    Create new data type
+                </span>
+                <span ng-if="!formCtrl.newType">
+                    Edit {{formCtrl.type.title}} data type
+                </span>
+            </h3>
+        </div>
+        <div class="panel-body">
+            <form novalidate name="form" ng-submit="formCtrl.save(form)" class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 col-xs-12 control-label" for="type_title">Type title</label>
+                    <div class="col-sm-10 col-xs-12">
+                        <input placeholder="Enter title"
+                               class="form-control"
+                               name="type_title"
+                               type="text"
+                               ng-model="formCtrl.type.title"
+                               ng-required="true">
+                        <div class="alert alert-danger" role="alert"
+                             ng-show="form.$submitted && form.type_title.$error.required">
+                            Please enter a title
+                        </div>
+                   </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="new_field" class="col-sm-2 col-xs-12 control-label">Add a new field</label>
+                    <div class="col-sm-6 col-xs-12">
+                        <input placeholder="Field name"
+                               class="form-control"
+                               name="new_field"
+                               type="text"
+                               ng-model="formCtrl.newField.name"
+                               keyable-string>
+                        <div class="alert alert-danger" ng-show="form.new_field.$error.validName">
+                          Entered String is not a valid string for field name. Please only use
+                          alphanumeric characters & spaces
+                        </div>
+                        <div class="alert alert-danger" ng-show="formCtrl.newFieldSubmitted && form.new_field.$error.required">
+                            Please enter a field name
+                        </div>
+                    </div>
+                    <div class="col-sm-2 col-xs-8">
+                        <select class="form-control" ng-model="formCtrl.newField.type" ng-required>
+                            <option value="">Field type</option>
+                            <option ng-repeat="(k, field_type) in formCtrl.fieldTypes"
+                                    value="{{ k }}">{{field_type.name}}</option>
+                        </select>
+
+                    </div>
+                    <div class="col-sm-2 col-xs-4">
+                        <button class="btn btn-default form-control" ng-click="formCtrl.addSubfield(form)" type="button">Add field</button>
+                    </div>
+                </div>
+
+                <table ng-if="formCtrl.type.fields && formCtrl.type.fields.length > 0" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Field name</th>
+                            <th>Field type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="field in formCtrl.type.fields">
+                            <td>
+                                <input placeholder="Field name"
+                                       class="form-control"
+                                       name="type_title"
+                                       type="text"
+                                       ng-show="formCtrl.isEditingField(field)"
+                                       ng-model="field.name">
+
+                                <span ng-show="!formCtrl.isEditingField(field)">
+                                    {{ field.name }}
+                                </span>
+                            </td>
+                            <td>
+                                <select class="form-control"
+                                        ng-model="field.type"
+                                        ng-show="formCtrl.isEditingField(field)"
+                                        ng-required>
+                                    <option value="">Field type</option>
+                                    <option ng-repeat="(k, field_type) in formCtrl.fieldTypes"
+                                            value="{{ k }}">{{field_type.name}}</option>
+                                </select>
+                                <span ng-show="!formCtrl.isEditingField(field)">
+                                    {{ field.type.name }}
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <hr>
+                <div class="form-group">
+                    <div class="col-xs-4 col-xs-offset-2">
+                        <button class="btn btn-primary form-control" type="submit">
+                            <span ng-if="!formCtrl.newType">Save</span>
+                            <span ng-if="formCtrl.newType">Create this datatype</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

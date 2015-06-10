@@ -25,21 +25,36 @@ class DatatypeFormCtrl
         id: @storage.newTypeId()
       @newType = true
 
-    @newField =
-      id: @storage.newFieldId(@type)
+    @newField = @createNewField()
+    @editingFields = {}
 
   save: (form)=>
-    console.log form
-    return unless form.$valid
-    if @isEditing()
+    unless form.$valid
+      unless form.$error.required.length == 1 and form.new_field.$error.required
+        return
+    if !@isEditing()
       @storage.create(@type)
+      console.log 'create'
     else
       @storage.save(@type)
+      console.log 'save'
 
-  isEditing: => @newType
+  isEditing: => @newType != true
 
-  addSubfield: (field)
+  addSubfield: (form)=>
+    @newFieldSubmitted = true
+    return unless _.isEmpty form.new_field.$error
+    console.log @newField
+    @newField.type = @fieldTypes[@newField.type]
+    @type.fields.push(angular.copy(@newField))
+    @newField = @createNewField()
 
+  createNewField: =>
+    @newFieldSubmitted = false
+    return id: @storage.newFieldId(@type)
 
-angular.module('dataRecorder')
+  isEditingField: (field)=>
+    @editingFields[field.id]?
+
+angular.module 'dataRecorder.datatype'
   .controller 'DatatypeFormCtrl', DatatypeFormCtrl

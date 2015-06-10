@@ -17,9 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class DatatypeListCtrl
   constructor: (@storage)->
     console.log 'DatatypeListCtrl !'
+    @types = @storage.allAggregated()
 
   allTypes: =>
-    @storage.allAggregated()
+    @types
 
   addRecord: (id)=>
     console.log 'should add record to type:', @storage.get(id)

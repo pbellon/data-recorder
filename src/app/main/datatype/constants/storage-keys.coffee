@@ -14,6 +14,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###
 
-angular.module 'dataRecorder'
+angular.module 'dataRecorder.datatype'
   .constant 'STORAGE_KEYS',
-    ID_LIST: 'all_ids'
+    ID_LIST: 'all_ids',
+    TYPE: 'type.{id}'

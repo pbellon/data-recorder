@@ -17,16 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 angular.module 'dataRecorder.datatype'
   .config ($stateProvider)->
     $stateProvider
-      .state('datatype.single',
-        template: '<div ui-view></div>'
-        url: '{type_id:int}/'
-        abstract: true
-        resolve:
-          type: (storage, $stateParams)->
-            storage.get $stateParams.type_id
-      )
-      .state('datatype.single.edit',
-        url: 'edit/'
-        controller: 'DatatypeFormCtrl as formCtrl'
-        templateUrl: 'app/main/datatype/single/form/form.html'
+      .state('datatype.single.records',
+        controller: 'DatatypeRecordsCtrl as recordsCtrl'
+        templateUrl: 'app/main/datatype/single/records/records.html'
+        url: 'records/'
       )

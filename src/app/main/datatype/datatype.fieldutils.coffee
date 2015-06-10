@@ -25,29 +25,33 @@ class DatatypeFieldUtils
       throw new Error("Invalid field name, please only use alphanumeric characters & ")
     key
 
+  keyableString: (string)->
+    pattern = /^([a-zA-Z0-9\ ])+$/
+    pattern.test(string)
 
 
-  keyableString: (field)->
-    pattern = /^([a-zA-Z0-9 ])$/
-    pattern.test(field.name)
+angular.module 'dataRecorder.datatype'
+  .service 'FieldUtils', DatatypeFieldUtils
 
+angular.module 'dataRecorder.datatype'
+  .directive 'keyableString', ['FieldUtils', (FieldUtils)->
+    restrict: 'A',
+    require: 'ngModel',
+    link: (scope, el, attrs, ngModel)->
+        validate = (value)->
+            if !value? || value == ""
+                ngModel.$setValidity 'required', false
+                console.log 'setValidity to false for required'
+                return
+            else
+                ngModel.$setValidity 'required', true
+            if FieldUtils.keyableString(value)
+                ngModel.$setValidity 'validName', true
+                return value
+            else
+                ngModel.$setValidity 'validName', false
+                return
 
-angular.module 'dataRecorder'
-       .service 'FieldUtils', DatatypeFieldUtils
-
-angular.module 'dataRecorder'
-       .directive 'keyableString', ['FieldUtils', (FieldUtils)->
-          restrict: 'A',
-          require: 'ngModel',
-          link: (scope, el, attrs, ngModel)->
-            validate = (regexp, value)->
-                if value == null || value === "" || FieldUtils.keyableString(value)
-                    ngModel.$setValidity 'validName', true
-                    return value
-                else
-                    ngModel.$setValidity 'validName', false
-                    return
-
-            ngModel.$formatters.push(validate)
-            ngModel.$parsers.push(validate)
-       ]
+          ngModel.$formatters.push(validate)
+          ngModel.$parsers.push(validate)
+  ]
